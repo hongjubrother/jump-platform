@@ -1,9 +1,3 @@
-# KidsCanCode - Game Development with Pygame video series
-# Jumpy! (a platform game) - Part 12
-# Video link: https://youtu.be/qnUVjACD3WM
-# Platform Graphics
-# Art from Kenney.nl
-
 import pygame as pg
 import random
 import time
@@ -34,6 +28,10 @@ class Game:
                 self.highscore = 0
         # load spritesheet image
         self.spritesheet = Spritesheet(path.join(img_dir, SPRITESHEET))
+        #cloud images
+        self.cloud_images = []
+        for i in range(1, 4):
+            self.cloud_images.append(pg.image.load(path.join(img_dir, 'cloud{}.png'.format(i))).convert())
         # load sounds
         self.snd_dir = path.join(self.dir, 'snd')
         self.jump_sound = pg.mixer.Sound(path.join(self.snd_dir, 'Kirby_jump1.mp3'))
@@ -47,6 +45,7 @@ class Game:
         self.platforms = pg.sprite.Group()
         self.powerups = pg.sprite.Group()
         self.mobs = pg.sprite.Group()
+        self.clouds = pg.sprite.Group()
         self.player = Player(self)
         for plat in PLATFORM_LIST:
             Platform(self, *plat)
@@ -73,6 +72,12 @@ class Game:
         if now - self.mob_timer > 5000 + random.choice([-1000, -500, 0, 500, 1000]):
             self.mob_timer = now
             Mob(self)
+
+        # 몹 충돌
+        mob_hits = pg.sprite.spritecollide(self.player, self.mobs, pg.sprite.collide_mask)
+        if mob_hits:
+            self.playing = False
+
         # check if player hits a platform - only if falling
         if self.player.vel.y > 0:
             hits = pg.sprite.spritecollide(self.player, self.platforms, False)
@@ -90,7 +95,11 @@ class Game:
 
         # if player reaches top 1/4 of screen
         if self.player.rect.top <= HEIGHT / 4:
+            if random.randrange(100) < 15: #배경구름 추가코드
+                Cloud(self)
             self.player.pos.y += max(abs(self.player.vel.y), 2)
+            for cloud in self.clouds:
+                cloud.rect.y += max(abs(self.player.vel.y / 2), 2)
             for mob in self.mobs:
                 mob.rect.y += max(abs(self.player.vel.y), 2)
             for plat in self.platforms:
