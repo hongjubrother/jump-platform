@@ -1,3 +1,4 @@
+
 import pygame as pg
 import random
 import time
@@ -76,6 +77,7 @@ class Game:
         # 몹 충돌
         mob_hits = pg.sprite.spritecollide(self.player, self.mobs, pg.sprite.collide_mask)
         if mob_hits:
+            self.player.hit()## 충돌 이미지 추가
             self.playing = False
 
         # check if player hits a platform - only if falling
