@@ -5,7 +5,7 @@ HEIGHT = 600
 FPS = 60
 FONT_NAME = 'NanumBarunGothicBold.ttf'
 HS_FILE = "highscore.txt"
-SPRITESHEET = "spritesheet_jumper.png"
+SPRITESHEET = "jumper-default.png"
 
 # Player properties
 PLAYER_ACC = 0.5
